@@ -1,257 +1,306 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leaf AI Detector | Premium Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .custom-loader {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes rotation {
+        0% {
+          transform: rotate(0deg);
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        100% {
+          transform: rotate(360deg);
         }
+      }
 
-        .custom-loader {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #FFF;
-            border-bottom-color: transparent;
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        #visualResult,
-        #canvas {
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
+      #visualResult,
+      #canvas {
+        border-radius: 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
     </style>
-</head>
+  </head>
 
-<body class="text-slate-800 antialiased pb-20">
-
+  <body class="text-slate-800 antialiased pb-20">
     <header class="py-12 text-center">
-        <div class="flex justify-center mb-4">
-            <div class="p-3 bg-black text-white rounded-2xl shadow-lg">
-                <i data-lucide="leaf" class="w-8 h-8"></i>
-            </div>
+      <div class="flex justify-center mb-4">
+        <div class="p-3 bg-black text-white rounded-2xl shadow-lg">
+          <i data-lucide="leaf" class="w-8 h-8"></i>
         </div>
-        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">Leaf <span class="text-green-600">AI</span>
-            Detector</h1>
-        <p class="mt-2 text-slate-500 font-medium">Analisis visual daun secara presisi dengan Machine Learning</p>
+      </div>
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900">
+        Leaf <span class="text-green-600">AI</span> Detector
+      </h1>
+      <p class="mt-2 text-slate-500 font-medium">
+        Analisis visual daun secara presisi dengan Machine Learning
+      </p>
     </header>
 
     <main class="max-w-4xl mx-auto px-4">
-
-        <div class="glass-card rounded-3xl p-8 shadow-sm border border-slate-200 mb-8">
-            <div class="flex flex-col md:flex-row items-center gap-6">
-                <div class="w-full flex-1">
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Upload Foto Daun</label>
-                    <div class="relative group">
-                        <input type="file" id="fileInput" accept="image/*"
-                            class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-xl p-1 transition-all group-hover:border-slate-300" />
-                    </div>
-                </div>
-                <div class="w-full md:w-auto pt-6">
-                    <button onclick="detectImage()" id="btnDetect"
-                        class="w-full md:w-auto bg-black hover:bg-slate-800 text-white font-bold py-3 px-8 rounded-xl transition-all active:scale-95 shadow-lg flex items-center justify-center">
-                        <span id="btnText">Mulai Deteksi</span>
-                    </button>
-                </div>
+      <div
+        class="glass-card rounded-3xl p-8 shadow-sm border border-slate-200 mb-8"
+      >
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          <div class="w-full flex-1">
+            <label class="block text-sm font-semibold text-slate-700 mb-2"
+              >Upload Foto Daun</label
+            >
+            <div class="relative group">
+              <input
+                type="file"
+                id="fileInput"
+                accept="image/*"
+                class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer border border-slate-200 rounded-xl p-1 transition-all group-hover:border-slate-300"
+              />
             </div>
-
-            <div id="infoArea" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
-                <div class="p-4 bg-green-50 rounded-2xl border border-green-100 flex items-center gap-4">
-                    <div class="p-2 bg-green-500 text-white rounded-lg">
-                        <i data-lucide="layers" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs text-green-600 font-bold uppercase tracking-wider">Hasil Deteksi</p>
-                        <p id="count" class="text-lg font-bold text-green-900">Jumlah daun: -</p>
-                    </div>
-                </div>
-                <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-center gap-4">
-                    <div class="p-2 bg-blue-500 text-white rounded-lg">
-                        <i data-lucide="activity" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs text-blue-600 font-bold uppercase tracking-wider">Status Server</p>
-                        <p id="status" class="text-lg font-bold text-blue-900 capitalize">Idle</p>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div class="w-full md:w-auto pt-6">
+            <button
+              onclick="detectImage()"
+              id="btnDetect"
+              class="w-full md:w-auto bg-black hover:bg-slate-800 text-white font-bold py-3 px-8 rounded-xl transition-all active:scale-95 shadow-lg flex items-center justify-center"
+            >
+              <span id="btnText">Mulai Deteksi</span>
+            </button>
+          </div>
         </div>
 
-        <div class="space-y-6">
-            <div id="visualContainer" class="hidden">
-                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="image" class="w-5 h-5"></i> Visualisasi Objek
-                </h3>
-                <div
-                    class="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex justify-center">
-                    <img id="visualResult" style="display:none;" class="max-h-[500px]" />
-                    <canvas id="canvas" style="display:none;" class="max-h-[500px]"></canvas>
-                </div>
+        <div
+          id="infoArea"
+          class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 hidden"
+        >
+          <div
+            class="p-4 bg-green-50 rounded-2xl border border-green-100 flex items-center gap-4"
+          >
+            <div class="p-2 bg-green-500 text-white rounded-lg">
+              <i data-lucide="layers" class="w-5 h-5"></i>
             </div>
-
-
+            <div>
+              <p
+                class="text-xs text-green-600 font-bold uppercase tracking-wider"
+              >
+                Hasil Deteksi
+              </p>
+              <p id="count" class="text-lg font-bold text-green-900">
+                Jumlah daun: -
+              </p>
+            </div>
+          </div>
+          <div
+            class="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-center gap-4"
+          >
+            <div class="p-2 bg-blue-500 text-white rounded-lg">
+              <i data-lucide="activity" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p
+                class="text-xs text-blue-600 font-bold uppercase tracking-wider"
+              >
+                Status Server
+              </p>
+              <p id="status" class="text-lg font-bold text-blue-900 capitalize">
+                Idle
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
 
+      <div class="space-y-6">
+        <div id="visualContainer" class="hidden">
+          <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <i data-lucide="image" class="w-5 h-5"></i> Visualisasi Objek
+          </h3>
+          <div
+            class="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex justify-center"
+          >
+            <img
+              id="visualResult"
+              style="display: none"
+              class="max-h-[500px]"
+            />
+            <canvas
+              id="canvas"
+              style="display: none"
+              class="max-h-[500px]"
+            ></canvas>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script>
-        // Initialize Icons
-        lucide.createIcons();
+      // Initialize Icons
+      lucide.createIcons();
 
-        async function detectImage() {
-            const file = document.getElementById("fileInput").files[0];
-            if (!file) {
-                alert("Upload gambar dulu bro");
-                return;
-            }
-
-            const status = document.getElementById("status");
-            const countEl = document.getElementById("count");
-            const visualImg = document.getElementById("visualResult");
-            const canvas = document.getElementById("canvas");
-            const btnText = document.getElementById("btnText");
-            const infoArea = document.getElementById("infoArea");
-            const visualContainer = document.getElementById("visualContainer");
-
-            // UI Feedback
-            btnText.innerHTML = `<span class="custom-loader"></span> Memproses...`;
-            status.textContent = "Processing...";
-            infoArea.classList.remove('hidden');
-            visualContainer.classList.add('hidden');
-
-            try {
-                const base64 = await fileToBase64(file);
-
-                const response = await fetch(
-                    "https://serverless.roboflow.com/websites-berlcosmetics/workflows/find-leaves",
-                    {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            api_key: "5Un5vyF6lXhfiYJkTLzI",
-                            inputs: {
-                                image: {
-                                    type: "base64",
-                                    value: base64.split(",")[1]
-                                }
-                            }
-                        })
-                    }
-                );
-
-                const result = await response.json();
-
-                const predictions = getPredictions(result);
-                const jumlah = predictions.length;
-
-                countEl.textContent = "Terdeteksi " + jumlah + " Daun";
-                visualContainer.classList.remove('hidden');
-
-                const visualBase64 = getVisualizationBase64(result);
-
-                if (visualBase64) {
-                    visualImg.src = "data:image/jpeg;base64," + visualBase64;
-                    visualImg.style.display = "block";
-                    canvas.style.display = "none";
-                } else {
-                    drawBoxes(file, predictions);
-                    canvas.style.display = "block";
-                    visualImg.style.display = "none";
-                }
-
-                status.textContent = "Success";
-                btnText.textContent = "Deteksi Lagi";
-            } catch (error) {
-                console.error(error);
-                status.textContent = "Error";
-                alert("Error: " + error.message);
-                btnText.textContent = "Mulai Deteksi";
-            }
+      async function detectImage() {
+        const file = document.getElementById("fileInput").files[0];
+        if (!file) {
+          alert("Upload gambar dulu bro");
+          return;
         }
 
-        // --- Fungsi Helper Tetap Sama (Logika Tidak Berubah) ---
+        const status = document.getElementById("status");
+        const countEl = document.getElementById("count");
+        const visualImg = document.getElementById("visualResult");
+        const canvas = document.getElementById("canvas");
+        const btnText = document.getElementById("btnText");
+        const infoArea = document.getElementById("infoArea");
+        const visualContainer = document.getElementById("visualContainer");
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-            });
+        // UI Feedback
+        btnText.innerHTML = `<span class="custom-loader"></span> Memproses...`;
+        status.textContent = "Processing...";
+        infoArea.classList.remove("hidden");
+        visualContainer.classList.add("hidden");
+
+        try {
+          const base64 = await fileToBase64(file);
+
+          const response = await fetch(
+            "https://serverless.roboflow.com/websites-berlcosmetics/workflows/find-leaves",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                api_key: "5Un5vyF6lXhfiYJkTLzI",
+                inputs: {
+                  image: {
+                    type: "base64",
+                    value: base64.split(",")[1],
+                  },
+                },
+              }),
+            },
+          );
+
+          const result = await response.json();
+
+          const predictions = getPredictions(result);
+          const jumlah = predictions.length;
+
+          countEl.textContent = "Terdeteksi " + jumlah + " Daun";
+          visualContainer.classList.remove("hidden");
+
+          // Always use canvas with custom badges
+          drawBoxes(file, predictions);
+          canvas.style.display = "block";
+          visualImg.style.display = "none";
+
+          status.textContent = "Success";
+          btnText.textContent = "Deteksi Lagi";
+        } catch (error) {
+          console.error(error);
+          status.textContent = "Error";
+          alert("Error: " + error.message);
+          btnText.textContent = "Mulai Deteksi";
+        }
+      }
+
+      // --- Fungsi Helper Tetap Sama (Logika Tidak Berubah) ---
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+        });
+      }
+
+      function getPredictions(result) {
+        if (result?.outputs?.[0]?.predictions?.predictions) {
+          return result.outputs[0].predictions.predictions;
+        }
+        if (Array.isArray(result) && result[0]?.predictions?.predictions) {
+          return result[0].predictions.predictions;
+        }
+        if (Array.isArray(result?.predictions)) {
+          return result.predictions;
         }
 
-        function getPredictions(result) {
-            if (result?.outputs?.[0]?.predictions?.predictions) {
-                return result.outputs[0].predictions.predictions;
-            }
-            if (Array.isArray(result) && result[0]?.predictions?.predictions) {
-                return result[0].predictions.predictions;
-            }
-            if (Array.isArray(result?.predictions)) {
-                return result.predictions;
-            }
+        return [];
+      }
 
-            return [];
-        }
+      function getVisualizationBase64(result) {
+        if (Array.isArray(result) && result[0]?.visualization?.value)
+          return result[0].visualization.value;
+        return (
+          result?.outputs?.[0]?.visualization?.value ||
+          result?.visualization?.value ||
+          null
+        );
+      }
 
-        function getVisualizationBase64(result) {
-            if (Array.isArray(result) && result[0]?.visualization?.value) return result[0].visualization.value;
-            return (result?.outputs?.[0]?.visualization?.value || result?.visualization?.value || null);
-        }
+      function drawBoxes(file, predictions) {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
 
-        function drawBoxes(file, predictions) {
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            const img = new Image();
-            img.src = URL.createObjectURL(file);
+        img.onload = () => {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          ctx.strokeStyle = "#22c55e"; // Green-500
 
-            img.onload = () => {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                ctx.strokeStyle = "#22c55e"; // Green-500
-                ctx.lineWidth = 4;
-                ctx.fillStyle = "#22c55e";
-                ctx.font = "bold 20px Inter";
+          predictions.forEach((pred, index) => {
+            const x = pred.x - pred.width / 2;
+            const y = pred.y - pred.height / 2;
 
-                predictions.forEach((pred) => {
-                    const x = pred.x - pred.width / 2;
-                    const y = pred.y - pred.height / 2;
-                    ctx.strokeRect(x, y, pred.width, pred.height);
-                    ctx.fillText(`${Math.round(pred.confidence * 100)}%`, x, y > 25 ? y - 10 : y + 25);
-                });
-            };
-        }
+            // Draw numbered badge at center of box
+            const badgeRadius = 20;
+            const badgeX = x + pred.width / 2;
+            const badgeY = y + pred.height / 2;
+
+            // Semi-transparent background circle
+            ctx.beginPath();
+            ctx.arc(badgeX, badgeY, badgeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(220, 38, 38, 0.85)";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Badge number
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 18px Inter";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(index + 1, badgeX, badgeY);
+          });
+        };
+      }
     </script>
-</body>
-
+  </body>
 </html>
